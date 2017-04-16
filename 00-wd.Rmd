@@ -1,17 +1,72 @@
-# Base de datos -----
-dbT   <- readxl::read_excel("BD.xlsx", 
-                            sheet = "BDT")
-# Recodificacion ----
+---
+title: "Tesis de MSc"
+author: "Aguilera-González, J.F."
+date: "13 de abril de 2017"
+output:
+  html_document: 
+    theme: spacelab
+    keep_md: true
+    toc: yes
+    highlight: haddock
+  html_notebook: default 
+  pdf_document:  default
+  word_document: default
+---
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+```
+### Directorio
+Para determinar la ubicación del directorio de trabajo y su contenido es necesario:
+
+  1. Emplear la función `getwd()`   
+  2. Visualizar los archivos con `dir()`
+```{r eval = FALSE, echo = TRUE, warning = FALSE, results = 'asis'}
+getwd() # Directorio de trabajo
+dir()   # Ubicacion del archivo: Base de Datos ("BD.xlsx")
+```
+### Base de datos
+La Base de Datos se almacenó como archivo `.xlsx` (Microsoft Excel 2013) con el nombre `"BD.xlsx"`. 
+
+* El archivo se compone de **tres hojas** de cálculo: 
+      + `"BDT"` *Datos Crudos* 
+      + `"BDA"` *Datos Hidrométricos e Hidrológicos*
+      + `"OUT"` *Datos Atípicos*
+
+* Los encabezados de las **columnas** corresponden a las **variables**
+* Cada **observación** se almacenó en una **fila**
+* La primer columna corresponde a la identificación **ID** de cada **observación** 
+
+Para visualizar la base de datos se requiere lo siguiente:
+
+  1. Con el **paquete** `readxl` importamos la Base de Datos al entorno de trabajo.
+  2. Creamos el **objeto** `dbT <-` que almacena la Base de Datos `"BD.xlsx"`, especifcando la Hoja con `sheet = "BDT"`
+```{r  echo=FALSE, eval=TRUE, results='hide', warning=FALSE, message=FALSE}
+require(readxl)# Paquete 
+dbT   <- readxl::read_excel("BD.xlsx", sheet = "BDT")
+```
+### Estructura, dimensión y clase
+Para determinar las características del objeto `dbT <-` empleamos:
+
+* Estructura:  `str(dbT)`
+* Dimensión:   `dim(dbT)`
+* Clase:       `class(dbT)`
+
+### Recodificación
+Variables almacenadas como caracteres `chr` las recodificamos a factor creando un nuevo objeto `df <-` con la función `data.table` 
+```{r echo=FALSE, eval=TRUE, results='hide', message=FALSE}
 require(data.table)
-df    <- data.table(dbT, 
-                    stringsAsFactors = T)
+df    <- data.table(dbT, stringsAsFactors = T)
 df$ID <- as.character(df$ID)
-# EDA (Exploratory Data Analysis) 
-### Peso y Medidas (Crudas y log) 
-# Ajuste visualizacion ----
+```
+
+***
+## Análisis Exploratorio de Datos (**EDA**)
+### 01-fulton-EDA
+```{r eval=TRUE, echo=FALSE}
+# Ajustes de visualización ----
 op <- par(mfcol= c (2,2), 
           mar = c(4,4,2,2))
-# BP-Cumulativos
+# BP-Cumulativos ----
 boxplot(df[,10:16], 
         col = "lightgray",
         ylab = "", 
@@ -20,7 +75,7 @@ boxplot(df[,10:16],
         horizontal = T, 
         cex.axis = 0.8, 
         cex.lab = 0.8)
-# BP-log-Cum 
+# BP-log-Cum -----
 boxplot(df[,10:16], 
         col = "lightgray",
         ylab = "", 
@@ -30,7 +85,7 @@ boxplot(df[,10:16],
         log = "x", 
         cex.axis = 0.8, 
         cex.lab = 0.8)
-# CP-Cumulativo
+# CP-Cumulativo ----
 dotchart(df$Peso[!is.na(df$Peso)], 
          bg = "black", 
          pt.cex = 1.5, 
@@ -39,7 +94,7 @@ dotchart(df$Peso[!is.na(df$Peso)],
          cex = 0.6, 
          xlab = "Peso (kg)", 
          ylab = "")
-# CP-log-Cum 
+# CP-log-Cum ----
 dotchart(log(df$Peso[!is.na(df$Peso)]), 
          bg = "black", 
          pt.cex = 1.5, 
@@ -52,7 +107,7 @@ dotchart(log(df$Peso[!is.na(df$Peso)]),
 require(data.table)
 H   <- df[Sexo == "H"]
 M   <- df[Sexo == "M"]
-# BP-Hembras 
+# BP-Hembras ----
 boxplot(H[,10:16], 
         col = "lightgray",
         ylab = "", 
@@ -61,7 +116,7 @@ boxplot(H[,10:16],
         horizontal = T, 
         cex.axis = 0.8, 
         cex.lab = 0.8)
-# BP-Machos 
+# BP-Machos ----
 boxplot(M[,10:16], 
         col = "lightgray",
         ylab = "", 
@@ -70,7 +125,7 @@ boxplot(M[,10:16],
         horizontal = T, 
         cex.axis = 0.8, 
         cex.lab = 0.8)
-# CP-Hembras
+# CP-Hembras ----
 dotchart(H$Peso[!is.na(H$Peso)], 
          bg = "black", 
          pt.cex = 1.5, 
@@ -79,7 +134,7 @@ dotchart(H$Peso[!is.na(H$Peso)],
          cex = 0.7, 
          xlab = "Peso (kg)", 
          ylab = "")
-# CP-Machos 
+# CP-Machos ----
 dotchart(M$Peso[!is.na(M$Peso)], 
          bg = "black", 
          pt.cex = 1.5, 
@@ -130,7 +185,9 @@ dotchart(log(M$Peso[!is.na(M$Peso)]),
 # Resetear ajustes de visualizacion ----
 par(op)
 
-### Multi-panel Cleveland dot plot----
+```
+
+```{r eval=TRUE, echo=FALSE, message=FALSE}
 # Variables con logaritmos base 10 (log10) ----
 require(dplyr)
 # Cumulativo 
@@ -250,3 +307,37 @@ dotplot(as.matrix(Hc),
         col = 1, cex  = 0.8, pch = 19,
         xlab = "Log Medidas Hembras",
         ylab = "")
+
+```
+
+### 02-fulton-mod
+
+```{r eval = TRUE, echo = FALSE, message = FALSE, include = FALSE}
+# Recodificacion ----
+require(data.table)
+require(tidyr)
+df    <- data.table(dbT, stringsAsFactors = T)
+df$ID <- as.character(df$ID)
+names(df)
+# Estratificando df -----
+# Var. Metricas y Var. Ambientales
+dfK <- data.table(df[,1:22]) 
+```
+
+#### Tablas
+
+Estratificación por:
+ 
+  * Estación
+  * Clase
+  * Sexo
+```{r echo = TRUE, warning = FALSE, message = FALSE, results='asis'}
+# Tablas ----
+t1 <- with(dfK, table(Sexo, Estacion))
+t2 <- with(dfK, table(Sexo, Clase))
+t3 <- with(dfK, table(Sexo))
+require(stargazer)
+stargazer(t1, type = "html", summary = F)
+```
+
+

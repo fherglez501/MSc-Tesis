@@ -1,5 +1,5 @@
 # Directorio ----
-setwd("~/R/TESIS/Base de Datos/Data/Final/")
+# setwd("~/R/TESIS/Base de Datos/Data/Final/")
 dir() # Ubicacion de la BD
 # Base de datos -----
 dbT   <- readxl::read_excel("BD.xlsx", sheet = "BDT")
