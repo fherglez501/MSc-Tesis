@@ -1,20 +1,21 @@
 ---
-title: "Tesis de MSc"
+title: "Tesis MSc Medicina de la Conservación"
 author: "Aguilera-González, J.F."
 date: "13 de abril de 2017"
 output:
-  html_document: 
-    theme: spacelab
-    keep_md: true
-    toc: yes
+  html_document:
     highlight: haddock
-  html_notebook: default 
-  pdf_document:  default
+    keep_md: yes
+    theme: spacelab
+    toc: yes
+  html_notebook: default
+  pdf_document: default
   word_document: default
 ---
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = FALSE)
 ```
+
 ### Directorio
 Para determinar la ubicación del directorio de trabajo y su contenido es necesario:
 
@@ -25,22 +26,24 @@ getwd() # Directorio de trabajo
 dir()   # Ubicacion del archivo: Base de Datos ("BD.xlsx")
 ```
 ### Base de datos
-La Base de Datos se almacenó como archivo `.xlsx` (Microsoft Excel 2013) con el nombre `"BD.xlsx"`. 
+La Base de Datos se almacenó como archivo `.xlsx` **(Microsoft Excel 2013)** con el nombre `"BD.xlsx"`. 
 
 * El archivo se compone de **tres hojas** de cálculo: 
-      + `"BDT"` *Datos Crudos* 
-      + `"BDA"` *Datos Hidrométricos e Hidrológicos*
-      + `"OUT"` *Datos Atípicos*
+      + `"BDT"`  *Datos Crudos* 
+      + `"BDA"`  *Datos Hidrométricos e Hidrológicos*
+      + `"OUT"`  *Datos Atípicos*
 
 * Los encabezados de las **columnas** corresponden a las **variables**
 * Cada **observación** se almacenó en una **fila**
 * La primer columna corresponde a la identificación **ID** de cada **observación** 
 
-Para visualizar la base de datos se requiere lo siguiente:
+![Base de Datos](C:\Users\Jose Fernando\Pictures\TESIS MSc\BD.png)  
+
+Para visualizar la base de datos en RStudio se requiere lo siguiente:
 
   1. Con el **paquete** `readxl` importamos la Base de Datos al entorno de trabajo.
   2. Creamos el **objeto** `dbT <-` que almacena la Base de Datos `"BD.xlsx"`, especifcando la Hoja con `sheet = "BDT"`
-```{r  echo=FALSE, eval=TRUE, results='hide', warning=FALSE, message=FALSE}
+```{r  echo = TRUE, eval = TRUE, warning = FALSE, results = 'asis', message = FALSE}
 require(readxl)# Paquete 
 dbT   <- readxl::read_excel("BD.xlsx", sheet = "BDT")
 ```
@@ -59,7 +62,11 @@ df    <- data.table(dbT, stringsAsFactors = T)
 df$ID <- as.character(df$ID)
 ```
 
+
 ***
+Los siguientes trozos de código `chunks` corresponden a los **scripts** alamacenados en [GitHub](https://github.com/FherGlez/MSc-Tesis).
+
+
 ## Análisis Exploratorio de Datos (**EDA**)
 ### 01-fulton-EDA
 ```{r eval=TRUE, echo=FALSE}
